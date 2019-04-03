@@ -91,8 +91,8 @@
         mat-fab
         class="next mat-accent fuse-white-fg"
         (click)="gotoNextStep()"
-        [disabled]="currentStep === course.totalSteps - 1"
-        [fxHide]="currentStep === course.totalSteps - 1"
+        [disabled]="currentStep === course.length - 1"
+        [fxHide]="currentStep === course.length - 1"
       >
         <mat-icon>chevron_right</mat-icon>
       </button>
@@ -100,12 +100,22 @@
       <button
         mat-fab
         class="done green-600"
-        routerLink="/apps/academy/courses"
-        [disabled]="currentStep !== course.totalSteps - 1"
-        [fxShow]="currentStep === course.totalSteps - 1"
+        [disabled]="currentStep !== course.length - 1"
+        [fxShow]="currentStep === course.length - 1"
+        (click)="swalInternet.show()"
       >
         <mat-icon>check</mat-icon>
       </button>
+      <swal
+        #swalInternet
+        title="The Internet?"
+        text="That thing is still around?"
+        type="question"
+        [showCancelButton]="true"
+        [focusCancel]="true"
+        [options]="{ confirmButtonText: 'I understand' }"
+        (confirm)="finishCourse()"
+      ></swal>
     </div>
   </div>
 </div>

@@ -1,3 +1,36 @@
-<p>
-  content-form works!
-</p>
+<div class="dialog-content-wrapper">
+  <mat-toolbar class="mat-accent m-0">
+    <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{ dialogTitle }}</span>
+      <button
+        mat-icon-button
+        (click)="matDialogRef.close()"
+        aria-label="Close dialog"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <div mat-dialog-content class="p-16 pb-0 m-0" fusePerfectScrollbar>
+    <form
+      name="contentForm"
+      [formGroup]="contentForm"
+      class="event-form w-100-p"
+      fxLayout="column"
+      fxFlex
+    >
+      <mat-form-field appearance="outline" class="w-100-p">
+        <mat-label>First</mat-label>
+        <input matInput name="first" formControlName="first" required />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-100-p">
+        <mat-label>Second</mat-label>
+        <input matInput name="second" formControlName="second" required />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-100-p">
+        <mat-label>Third</mat-label>
+        <input matInput name="third" formControlName="third" required />
+      </mat-form-field>
+    </form>
+  </div>
+</div>

@@ -10,6 +10,8 @@ import {
 } from '@angular/material';
 import { FuseSidebarModule } from '@fuse/components';
 
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+
 import { CoursesComponent } from './courses/courses.component';
 import { CourseComponent } from './course/course.component';
 import { CoursesService } from './courses.service';
@@ -41,6 +43,7 @@ const routes = [
   declarations: [CoursesComponent, CourseComponent, TransLevelPipe],
   imports: [
     RouterModule.forChild(routes),
+    SweetAlert2Module.forRoot(),
 
     MatFormFieldModule,
     MatIconModule,

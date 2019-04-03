@@ -18,6 +18,8 @@ import {
 
 import { fuseConfig } from 'app/fuse-config';
 
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+
 import { AppComponent } from 'app/app.component';
 import { LayoutModule } from 'app/layout/layout.module';
 import { SampleModule } from 'app/main/sample/sample.module';
@@ -53,6 +55,9 @@ const appRoutes: Routes = [
     FuseSharedModule,
     FuseSidebarModule,
     FuseThemeOptionsModule,
+
+    // third party modules
+    SweetAlert2Module.forRoot(),
 
     // App modules
     LayoutModule,

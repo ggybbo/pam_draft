@@ -6,6 +6,8 @@ import { Subject } from 'rxjs';
 import { startOfDay, isSameDay, isSameMonth } from 'date-fns';
 
 import { fuseAnimations } from '@fuse/animations';
+import { FuseConfirmDialogComponent } from '@fuse/components/confirm-dialog/confirm-dialog.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { CalendarService } from './calendar.service';
 import {
@@ -17,8 +19,7 @@ import {
 
 import { CalendarEventModel } from 'app/main/apps/calendar/calendar.model';
 import { EventFormComponent } from 'app/main/apps/calendar/event-form/event-form.component';
-import { FuseConfirmDialogComponent } from '@fuse/components/confirm-dialog/confirm-dialog.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ContentFormComponent } from 'app/main/apps/calendar/content-form/content-form.component';
 
 @Component({
   selector: 'app-calendar',
@@ -53,7 +54,8 @@ export class CalendarComponent implements OnInit {
       {
         label: '<i class="material-icons s-16">add_to_queue</i>',
         onClick: ({ event }: { event: CalendarEvent }): void => {
-          this.router.navigate(['/apps/academy/courses/2/1']);
+          // this.router.navigate(['/apps/academy/courses/2/1']);
+          this.addContent();
         }
       },
       {
@@ -202,6 +204,28 @@ export class CalendarComponent implements OnInit {
         this.refresh.next(true);
       }
       this.confirmDialogRef = null;
+    });
+  }
+
+  addContent(): void {
+    console.log('add content');
+    this.dialogRef = this._matDialog.open(ContentFormComponent, {
+      panelClass: 'event-form-dialog',
+      data: {
+        action: 'new',
+        date: this.selectedDay.date
+      }
+    });
+    this.dialogRef.afterClosed().subscribe((response: FormGroup) => {
+      console.log('close add content');
+      if (!response) {
+        return;
+      }
+      const newEvent = response.getRawValue();
+      console.log(newEvent);
+      // newEvent.actions = this.actions;
+      // this.events.push(newEvent);
+      // this.refresh.next(true);
     });
   }
 }

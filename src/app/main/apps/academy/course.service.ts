@@ -33,7 +33,7 @@ export class CourseService implements Resolve<any> {
   getCourse(courseId, courseSlug): Promise<any> {
     return new Promise((resolve, reject) => {
       this._httpClient
-        .get('http://localhost:3000/courses')
+        .get('http://localhost:3000/courses/' + courseSlug + '/' + courseId)
         .subscribe((response: any) => {
           this.onCourseChanged.next(response);
           resolve(response);

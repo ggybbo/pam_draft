@@ -23,6 +23,9 @@ export class CalendarEventModel {
     location: string;
     notes: string;
     level: number;
+    first?: string;
+    second?: string;
+    third?: string;
   };
 
   constructor(data?) {
@@ -47,7 +50,10 @@ export class CalendarEventModel {
     this.meta = {
       location: (data.meta && data.meta.location) || '',
       notes: (data.meta && data.meta.notes) || '',
-      level: (data.meta && data.meta.level) || ''
+      level: (data.meta && data.meta.level) || '',
+      first: (data.meta && data.meta.location) || '',
+      second: (data.meta && data.meta.notes) || '',
+      third: (data.meta && data.meta.level) || ''
     };
   }
 }

@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { CalendarEvent } from 'angular-calendar';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import { MatColors } from '@fuse/mat-colors';
 import {
@@ -23,6 +24,7 @@ import { CalendarEventModel } from '../calendar.model';
   styleUrls: ['./event-form.component.scss']
 })
 export class EventFormComponent {
+  public Editor = ClassicEditor;
   action: string;
   event: CalendarEvent;
   eventForm: FormGroup;
@@ -38,7 +40,7 @@ export class EventFormComponent {
   ) {
     this.event = _data.event;
     this.action = _data.action;
-    console.log(_data.event);
+    // console.log(_data.event);
     if (this.action === 'edit') {
       const startHours = new Date(this.event.start).getHours();
       const startMinutes =

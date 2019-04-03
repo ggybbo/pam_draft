@@ -16,6 +16,8 @@ import { FusePerfectScrollbarDirective } from '@fuse/directives/fuse-perfect-scr
 import { fuseAnimations } from '@fuse/animations';
 
 import { CourseService } from 'app/main/apps/academy/course.service';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-course',
@@ -31,14 +33,18 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
   currentStep: any;
 
   @ViewChildren(FusePerfectScrollbarDirective)
-  fuseScrollbarDirectives: QueryList<FusePerfectScrollbarDirective>;
-
+  @ViewChildren('swalInternet')
+  private swalInternet: SwalComponent;
   private _unsubscribeAll: Subject<any>;
+
+  fuseScrollbarDirectives: QueryList<FusePerfectScrollbarDirective>;
 
   constructor(
     private _academyCourseService: CourseService,
     private _changeDetectorRef: ChangeDetectorRef,
-    private _fuseSidebarService: FuseSidebarService
+    private _fuseSidebarService: FuseSidebarService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.animationDirection = 'none';
     this.currentStep = 0;
@@ -50,6 +56,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(course => {
         this.course = course;
+        this.course.title = course[0].title;
       });
   }
 
@@ -62,6 +69,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
         );
       }
     );
+    this.course.title = this.course[this.currentStep].title;
   }
 
   ngOnDestroy(): void {
@@ -73,6 +81,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     this.animationDirection = this.currentStep < step ? 'left' : 'right';
     this._changeDetectorRef.detectChanges();
     this.currentStep = step;
+    this.course.title = this.course[this.currentStep].title;
   }
 
   gotoPreviousStep(): void {
@@ -83,10 +92,11 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this._changeDetectorRef.detectChanges();
     this.currentStep--;
+    this.course.title = this.course[this.currentStep].title;
   }
 
   gotoNextStep(): void {
-    if (this.currentStep === this.course.totalSteps - 1) {
+    if (this.currentStep === this.course.length - 1) {
       return;
     }
 
@@ -95,9 +105,14 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     this._changeDetectorRef.detectChanges();
 
     this.currentStep++;
+    this.course.title = this.course[this.currentStep].title;
   }
 
   toggleSidebar(name): void {
     this._fuseSidebarService.getSidebar(name).toggleOpen();
+  }
+
+  finishCourse(): void {
+    this.router.navigate(['/apps/academy/courses']);
   }
 }

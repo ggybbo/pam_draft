@@ -22,6 +22,8 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { FuseSharedModule } from '@fuse/shared.module';
 import { FuseConfirmDialogModule } from '@fuse/components';
 
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+
 import { CalendarComponent } from './calendar.component';
 import { CalendarService } from './calendar.service';
 import { EventFormComponent } from './event-form/event-form.component';
@@ -60,9 +62,11 @@ const routes: Routes = [
     ColorPickerModule,
 
     FuseSharedModule,
-    FuseConfirmDialogModule
+    FuseConfirmDialogModule,
+
+    CKEditorModule
   ],
   providers: [CalendarService],
-  entryComponents: [EventFormComponent]
+  entryComponents: [EventFormComponent, ContentFormComponent]
 })
 export class CalendarModule {}
