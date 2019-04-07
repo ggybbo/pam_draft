@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
@@ -23,9 +23,19 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { AppComponent } from 'app/app.component';
 import { LayoutModule } from 'app/layout/layout.module';
 import { SampleModule } from 'app/main/sample/sample.module';
+import { JwtInterceptor, ErrorInterceptor } from './services/auth/_helpers';
+import { AuthGuard } from './services/auth/_guards';
 
 const appRoutes: Routes = [
-  { path: 'apps', loadChildren: './main/apps/apps.module#AppsModule' },
+  {
+    path: 'apps',
+    loadChildren: './main/apps/apps.module#AppsModule',
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'pages',
+    loadChildren: './main/pages/pages.module#PagesModule'
+  },
   {
     path: '**',
     redirectTo: 'sample'
@@ -62,6 +72,10 @@ const appRoutes: Routes = [
     // App modules
     LayoutModule,
     SampleModule
+  ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

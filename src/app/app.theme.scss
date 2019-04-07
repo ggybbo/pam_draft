@@ -84,6 +84,20 @@ $typography: mat-typography-config(
 @import 'src/app/main/apps/academy/academy.theme';
 @import 'src/app/main/apps/calendar/calendar.theme';
 
+@import 'src/app/main/pages/authentication/login/login.theme';
+@import 'src/app/main/pages/authentication/lock/lock.theme';
+
+@import 'src/app/main/pages/coming-soon/coming-soon.theme';
+@import 'src/app/main/pages/errors/404/error-404.theme';
+@import 'src/app/main/pages/errors/500/error-500.theme';
+@import 'src/app/main/pages/maintenance/maintenance.theme';
+
+@import 'src/app/main/pages/profile/tabs/about/about.theme';
+@import 'src/app/main/pages/profile/tabs/photos-videos/photos-videos.theme';
+@import 'src/app/main/pages/profile/tabs/timeline/timeline.theme';
+
+@import 'src/app/main/pages/faq/faq.theme';
+
 // Define a mixin for easier access
 @mixin components-theme($theme) {
   // Layout components
@@ -93,6 +107,17 @@ $typography: mat-typography-config(
   // Apps
   @include academy-theme($theme);
   @include calendar-theme($theme);
+
+  // Pages
+  @include login-theme($theme);
+  @include coming-soon-theme($theme);
+  @include error-404-theme($theme);
+  @include error-500-theme($theme);
+  @include maintenance-theme($theme);
+  @include profile-about-theme($theme);
+  @include profile-photos-videos-theme($theme);
+  @include profile-timeline-theme($theme);
+  @include faq-theme($theme);
 }
 
 // -----------------------------------------------------------------------------------------------------

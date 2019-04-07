@@ -33,11 +33,10 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
   currentStep: any;
 
   @ViewChildren(FusePerfectScrollbarDirective)
+  fuseScrollbarDirectives: QueryList<FusePerfectScrollbarDirective>;
   @ViewChildren('swalInternet')
   private swalInternet: SwalComponent;
   private _unsubscribeAll: Subject<any>;
-
-  fuseScrollbarDirectives: QueryList<FusePerfectScrollbarDirective>;
 
   constructor(
     private _academyCourseService: CourseService,
