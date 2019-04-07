@@ -1,0 +1,40 @@
+<div id="login" fxLayout="column">
+  <div id="login-form-wrapper" fxLayout="column" fxLayoutAlign="center center">
+    <div
+      id="login-form"
+      [@animate]="{ value: '*', params: { duration: '300ms', y: '100px' } }"
+    >
+      <div class="logo">
+        <img src="assets/images/logos/fuse.svg" />
+      </div>
+
+      <div class="title">LOGIN TO YOUR ACCOUNT</div>
+
+      <!-- <form name="loginForm" [formGroup]="loginForm" novalidate>
+
+            </form> -->
+
+      <!-- <div class="separator">
+                <span class="text">OR</span>
+            </div> -->
+
+      <!-- <a id="kakao-login-btn"></a> -->
+
+      <button mat-raised-button class="kakao" (click)="kakaoLogin()">
+        <img src="assets/images/kakao/Kakao_Corp._symbol_-_2012.svg" />
+        Log in with Kakao
+      </button>
+
+      <!-- <button mat-raised-button class="facebook" (click)="fbLogin()">
+        Log in with Facebook
+      </button> -->
+
+      <div class="register" fxLayout="column" fxLayoutAlign="center center">
+        <span class="text">Don't have an account?</span>
+        <a class="link" [routerLink]="'/pages/auth/register'"
+          >Create an account</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
