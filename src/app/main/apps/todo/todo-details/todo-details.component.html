@@ -1,0 +1,426 @@
+<div *ngIf="!todo" fxLayout="column" fxLayoutAlign="center center" fxFlex>
+  <mat-icon
+    class="s-120 mb-12 select-todo-icon hint-text"
+    [@animate]="{ value: '*', params: { delay: '300ms', scale: '0.2' } }"
+    *ngIf="isTeacher"
+    >check_box
+  </mat-icon>
+  <span
+    class="hint-text mat-h1 select-todo-text"
+    [@animate]="{ value: '*', params: { delay: '400ms' } }"
+    *ngIf="isTeacher"
+  >
+    Select a todo
+  </span>
+</div>
+
+<div *ngIf="todo">
+  <div
+    class="todo-header"
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    *ngIf="isTeacher"
+  >
+    <button
+      mat-button
+      class="toggle-complete-button"
+      (click)="toggleCompleted($event)"
+      aria-label="Toggle completed"
+      fxFlex="0 1 auto"
+    >
+      <mat-icon *ngIf="todo.completed">check_box</mat-icon>
+      <mat-icon *ngIf="!todo.completed">check_box_outline_blank</mat-icon>
+      <span class="ml-8">Mark as Done</span>
+    </button>
+
+    <div class="actions" fxLayout="row" fxLayoutAlign="start center">
+      <button
+        mat-icon-button
+        (click)="toggleImportant($event)"
+        aria-label="Toggle important"
+      >
+        <mat-icon class="red-fg" *ngIf="todo.important">error</mat-icon>
+        <mat-icon class="secondary-text" *ngIf="!todo.important"
+          >error_outline</mat-icon
+        >
+      </button>
+
+      <button
+        mat-icon-button
+        (click)="toggleStar($event)"
+        aria-label="Toggle star"
+      >
+        <mat-icon class="amber-fg" *ngIf="todo.starred">star</mat-icon>
+        <mat-icon class="secondary-text" *ngIf="!todo.starred"
+          >star_border</mat-icon
+        >
+      </button>
+
+      <button mat-icon-button [matMenuTriggerFor]="labelMenu" fxFlex="0 1 auto">
+        <mat-icon class="secondary-text">label</mat-icon>
+      </button>
+
+      <mat-menu #labelMenu="matMenu">
+        <button
+          mat-menu-item
+          *ngFor="let tag of tags"
+          (click)="toggleTagOnTodo(tag.id)"
+        >
+          <mat-icon *ngIf="hasTag(tag.id)">check</mat-icon>
+          <mat-icon *ngIf="!hasTag(tag.id)"></mat-icon>
+          <span>{{ tag.title }}</span>
+        </button>
+      </mat-menu>
+
+      <button
+        mat-icon-button
+        (click)="toggleDeleted($event)"
+        aria-label="Toggle delete"
+      >
+        <mat-icon class="secondary-text" *ngIf="todo.deleted"
+          >delete_forever</mat-icon
+        >
+        <mat-icon class="secondary-text" *ngIf="!todo.deleted">delete</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="todo-content">
+    <form [formGroup]="todoForm">
+      <div class="tags mb-24" fxFlexFill fxLayout="row wrap">
+        <div
+          class="tag"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          *ngFor="let tagId of todo.tags"
+        >
+          <div
+            class="tag-color"
+            [ngStyle]="{ 'background-color': tags | getById: tagId:'color' }"
+          ></div>
+          <div class="tag-label">{{ tags | getById: tagId:'title' }}</div>
+        </div>
+      </div>
+
+      <mat-form-field
+        appearance="outline"
+        class="title mt-8"
+        fxFill
+        *ngIf="isTeacher; else userTitle"
+      >
+        <mat-label>Title</mat-label>
+        <textarea
+          matInput
+          #titleInput
+          name="title"
+          formControlName="title"
+          required
+        >
+        </textarea>
+      </mat-form-field>
+
+      <ng-template #userTitle>
+        <div
+          class="section-header mb-16"
+          fxlayout="row"
+          fxlayoutalign="start"
+          style="flex-direction: row; box-sizing: border-box; display: flex; place-content: stretch flex-start; align-items: stretch;"
+        >
+          <div class="section-header title">
+            <span class="section-title">{{ todo.title }}</span>
+          </div>
+        </div>
+      </ng-template>
+
+      <div
+        class="dates"
+        fxFlexFill
+        fxLayout="column"
+        fxLayout.gt-xs="row"
+        *ngIf="isTeacher; else userTime"
+      >
+        <mat-form-field appearance="outline" class="mr-sm-12" fxFlex>
+          <mat-label>Start Date</mat-label>
+          <input matInput [matDatepicker]="startDatePicker" />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="startDatePicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #startDatePicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="ml-sm-12" fxFlex>
+          <mat-label>Due Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="dueDatePicker"
+            placeholder="Due Date"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="dueDatePicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #dueDatePicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <ng-template #userTime></ng-template>
+
+      <ng-template #userQuestion
+        ><div class="userNotes">
+          <div class="section-header">
+            <mat-icon
+              class="mr-8 mat-icon material-icons mat-icon-no-color"
+              role="img"
+              aria-hidden="true"
+              >check_box</mat-icon
+            ><span
+              class="section-title"
+              fxflex=""
+              style="flex: 1 1 0%; box-sizing: border-box;"
+              >SUMMARY</span
+            >
+          </div>
+          <div class="section-content" [innerHTML]="todo.notes"></div></div
+      ></ng-template>
+
+      <!-- teacher MP3 upload -->
+
+      <div
+        class="section-header mb-16"
+        fxlayout="row"
+        fxlayoutalign="start"
+        style="flex-direction: row; box-sizing: border-box; display: flex; place-content: stretch flex-start; align-items: stretch;"
+      >
+        <mat-icon
+          class="mr-8 mat-icon material-icons mat-icon-no-color"
+          role="img"
+          aria-hidden="true"
+          >attachment</mat-icon
+        >
+        <span class="section-title">MP3 Attachment FOR TEACHER</span>
+      </div>
+      <div
+        class="tags mb-24"
+        fxFlexFill
+        fxLayout="row wrap"
+        *ngIf="!todo.tmp3Url"
+      >
+        <mat-progress-bar
+          class="mb-16"
+          mode="determinate"
+          [value]="pValue"
+          color="primary"
+          *ngIf="showProgreeBar"
+        >
+        </mat-progress-bar>
+        <!-- <div class="message-box info">
+                녹음 파일 업로드
+              </div> -->
+        <input type="file" class="usermp3File" (change)="selectFile($event)" />
+        <div *ngIf="!tmp3Url">
+          <div *ngIf="pcValue != 100">
+            <button type="button" class="usermp3Btn" (click)="upload()">
+              <span class="mat-button-wrapper"> Upload MP3 </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <mat-basic-audio-player
+        *ngIf="pcValue == 100"
+        [audioUrl]="tuploadUrl"
+        [title]="pcTitle"
+        [displayTitle]="true"
+      >
+      </mat-basic-audio-player>
+      <div class="mb-16" *ngIf="tuploadUrl"></div>
+
+      <div class="mb-24 teacher" *ngIf="todo.tmp3Url">
+        <mat-basic-audio-player
+          [audioUrl]="todo.tmp3Url"
+          [title]="todo.tmp3Title"
+          [displayTitle]="true"
+        >
+        </mat-basic-audio-player>
+      </div>
+
+      <!-- teacher MP3 upload -->
+
+      <mat-form-field
+        appearance="outline"
+        fxFill
+        *ngIf="isTeacher; else userQuestion"
+      >
+        <mat-label>Notes</mat-label>
+        <textarea
+          matInput
+          #notes
+          name="notes"
+          formControlName="notes"
+          maxlength="500"
+        >
+        </textarea>
+        <mat-hint align="end">{{ notes.value.length }} / 500</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" fxFill *ngIf="isTeacher">
+        <mat-label>User</mat-label>
+        <mat-select name="userId" formControlName="userId">
+          <mat-option *ngFor="let user of users" [value]="user.id">
+            {{ user.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="userNotes mt-12">
+        <div class="section-header">
+          <mat-icon
+            class="mr-8 mat-icon material-icons mat-icon-no-color"
+            role="img"
+            aria-hidden="true"
+            >help_outline
+          </mat-icon>
+          <span
+            class="section-title"
+            fxflex=""
+            style="flex: 1 1 0%; box-sizing: border-box;"
+            >QUESTION</span
+          >
+        </div>
+        <mat-form-field
+          appearance="outline"
+          class="title mt-8"
+          fxFill
+          *ngIf="isTeacher"
+        >
+          <mat-label>Question</mat-label>
+          <textarea matInput name="question" formControlName="question">
+          </textarea>
+        </mat-form-field>
+        <div class="section-content-question" *ngIf="!isTeacher">
+          {{ todo.question }}
+        </div>
+        <mat-form-field
+          appearance="outline"
+          fxFill
+          *ngIf="!isTeacher; else userAnswer"
+        >
+          <mat-label>Answer</mat-label>
+          <textarea
+            matInput
+            #answer
+            name="answer"
+            formControlName="answer"
+            maxlength="1500"
+          >
+          </textarea>
+          <mat-hint align="end">{{ answer.value.length }} / 1500</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <ng-template #userAnswer>
+        <div class="section-header">
+          <mat-icon
+            class="mr-8 mat-icon material-icons mat-icon-no-color"
+            role="img"
+            aria-hidden="true"
+            >question_answer
+          </mat-icon>
+          <span
+            class="section-title"
+            fxflex=""
+            style="flex: 1 1 0%; box-sizing: border-box;"
+            >USER's ANSWER</span
+          >
+        </div>
+        <blockquote>
+          <p>
+            {{ todo.answer }}
+          </p>
+        </blockquote>
+      </ng-template>
+
+      <div class="mb-24 users" *ngIf="todo.ump3Url">
+        <mat-basic-audio-player
+          [audioUrl]="todo.ump3Url"
+          [title]="todo.ump3Title"
+          [displayTitle]="true"
+        >
+        </mat-basic-audio-player>
+      </div>
+
+      <div
+        class="section-header mb-16"
+        fxlayout="row"
+        fxlayoutalign="start"
+        style="flex-direction: row; box-sizing: border-box; display: flex; place-content: stretch flex-start; align-items: stretch;"
+      >
+        <mat-icon
+          class="mr-8 mat-icon material-icons mat-icon-no-color"
+          role="img"
+          aria-hidden="true"
+          >attachment</mat-icon
+        >
+        <span class="section-title">MP3 Attachment</span>
+      </div>
+      <div
+        class="tags mb-24"
+        fxFlexFill
+        fxLayout="row wrap"
+        *ngIf="!todo.ump3Url"
+      >
+        <mat-progress-bar
+          class="mb-16"
+          mode="determinate"
+          [value]="pValue"
+          color="primary"
+          *ngIf="showProgreeBar"
+        ></mat-progress-bar>
+        <!-- <div class="message-box info">
+          녹음 파일 업로드
+        </div> -->
+        <label *ngIf="pValue != 100">
+          <!-- <label for="userFile">파일 선택</label> -->
+          <input
+            type="file"
+            class="usermp3File"
+            id="userFile"
+            (change)="selectFile($event)"
+          />
+        </label>
+        <div *ngIf="!ump3Url">
+          <div *ngIf="pValue != 100">
+            <button type="button" class="usermp3Btn" (click)="userMp3upload()">
+              <span class="mat-button-wrapper"> Upload MP3 </span>
+            </button>
+          </div>
+        </div>
+        <div class="mb-24" *ngIf="todo.tmp3Url"></div>
+        <mat-basic-audio-player
+          *ngIf="pValue == 100"
+          [audioUrl]="uploadUrl"
+          [title]="msbapTitle"
+          [displayTitle]="true"
+        >
+        </mat-basic-audio-player>
+      </div>
+      <div
+        class="message-box warning mb-16"
+        *ngIf="!todo.ump3Url || !todo.tmp3Url"
+      >
+        파일을 첨부한 후 Upload MP3 버튼을 눌러주세요.
+        <mark>SAVE 까지</mark> 하셔야 정상적으로 저장됩니다
+      </div>
+      <button
+        mat-raised-button
+        color="accent"
+        [disabled]="todoForm.invalid"
+        (click)="addTodo()"
+        *ngIf="!todo.completed"
+      >
+        SAVE
+      </button>
+    </form>
+  </div>
+</div>

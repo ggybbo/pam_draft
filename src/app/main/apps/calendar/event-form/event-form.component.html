@@ -20,6 +20,10 @@
       fxLayout="column"
       fxFlex
     >
+      <div formGroupName="meta" class="w-100-p">
+        <input type="hidden" name="key" formControlName="key" />
+        <input type="hidden" name="tid" formControlName="tid" />
+      </div>
       <mat-form-field appearance="outline" class="w-100-p">
         <mat-label>Title</mat-label>
         <input matInput name="title" formControlName="title" required />

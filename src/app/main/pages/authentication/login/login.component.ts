@@ -26,6 +26,7 @@ const url = '//developers.kakao.com/sdk/js/kakao.min.js';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   kakaoParams: any = '';
+  loggedin: boolean;
   /**
    * Constructor
    *
@@ -34,10 +35,11 @@ export class LoginComponent implements OnInit {
    */
   constructor(
     private _fuseConfigService: FuseConfigService,
-    private _formBuilder: FormBuilder,
-    private authenticationService: AuthenticationService,
+    // private _formBuilder: FormBuilder,
+    // private authenticationService: AuthenticationService,
     private el: ElementRef,
-    private router: Router
+    private router: Router,
+    private _authenticationService: AuthenticationService
   ) {
     // Configure the layout
     this._fuseConfigService.config = {
@@ -56,6 +58,8 @@ export class LoginComponent implements OnInit {
         }
       }
     };
+
+    this.loggedin = false;
   }
 
   // -----------------------------------------------------------------------------------------------------
@@ -66,15 +70,18 @@ export class LoginComponent implements OnInit {
    * On init
    */
   ngOnInit(): void {
-    this.loginForm = this._formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
-    });
-    // if (localStorage.getItem('currentUser')) {
-    //   this.router.navigate(['/']);
-    // }
+    // this.loginForm = this._formBuilder.group({
+    //   email: ['', [Validators.required, Validators.email]],
+    //   password: ['', Validators.required]
+    // });
+
     this.loadKakaoApi()
-      .then(() => console.log('login start'))
+      .then(() => {
+        // console.log('login start');
+        if (sessionStorage.getItem('currentUser')) {
+          // console.log('session_storage');
+        }
+      })
       .catch(err => console.error(err));
   }
 
@@ -87,48 +94,56 @@ export class LoginComponent implements OnInit {
       this.el.nativeElement.appendChild(s);
       s.onload = function() {
         Kakao.init('6a34b057c55410133990109463ca3484');
-        // function loginWithKakao() {
-        //   // 로그인 창을 띄웁니다.
-        //   Kakao.Auth.login({
-        //     success: function(authObj) {
-        //       alert(JSON.stringify(authObj));
-        //     },
-        //     fail: function(err) {
-        //       alert(JSON.stringify(err));
-        //     }
-        //   });
-        // }
-        // Kakao.Auth.createLoginButton({
-        //   container: '#kakao-login-btn',
-        //   success: function(authObj) {
-        //     let response = JSON.stringify(authObj);
-        //     localStorage.setItem('currentUser', response);
-        //   },
-        //   fail: function(err) {
-        //     alert(JSON.stringify(err));
-        //   }
-        // });
       };
       resolve(true);
     });
   }
 
   kakaoLogin(): void {
-    // this.authenticationService.login().subscribe(data => {
-    //   console.log('kakao login');
-    // });
-    this.loadKakaoApi().then(() => {
+    this.kakaoLogin$()
+      .then(data => {
+        this.loggedin = true;
+        this._authenticationService.login();
+      })
+      .catch(err => alert('api errors'));
+  }
+
+  kakaoLogin$(): Promise<any> {
+    return new Promise((resolve, reject) => {
       Kakao.Auth.login({
         success: function(authObj) {
           let response = JSON.stringify(authObj);
-          localStorage.setItem('currentUser', response);
-          window.location.href = '/';
+          sessionStorage.setItem('currentUser', response);
+          resolve(true);
         },
         fail: function(err) {
           alert(JSON.stringify(err));
+          reject();
         }
       });
     });
+  }
+
+  addplusFriend(): void {
+    this.addkakaoplusFriend$()
+      .then(data => {
+        alert('플러스 친구에 등록해주셔서 감사합니다');
+      })
+      .catch(err => alert('api errors'));
+  }
+
+  addkakaoplusFriend$(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // _Sxbxfuxl
+      Kakao.PlusFriend.addFriend({
+        plusFriendId: '_Sxbxfuxl' // 플러스친구 홈 URL에 명시된 id로 설정합니다.
+      });
+      resolve(true);
+    });
+  }
+
+  gotoAcademy(): void {
+    this.router.navigate(['/apps/academy/courses']);
   }
 
   fbLogin(): void {

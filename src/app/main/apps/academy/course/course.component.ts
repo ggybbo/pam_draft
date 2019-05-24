@@ -18,6 +18,9 @@ import { fuseAnimations } from '@fuse/animations';
 import { CourseService } from 'app/main/apps/academy/course.service';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { MemoComponent } from './memo/memo.component';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-course',
@@ -31,6 +34,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
   course: any;
   courseStepContent: any;
   currentStep: any;
+  dialogRef: any;
 
   @ViewChildren(FusePerfectScrollbarDirective)
   fuseScrollbarDirectives: QueryList<FusePerfectScrollbarDirective>;
@@ -42,7 +46,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     private _academyCourseService: CourseService,
     private _changeDetectorRef: ChangeDetectorRef,
     private _fuseSidebarService: FuseSidebarService,
-    private route: ActivatedRoute,
+    private _matDialog: MatDialog,
     private router: Router
   ) {
     this.animationDirection = 'none';
@@ -113,5 +117,26 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   finishCourse(): void {
     this.router.navigate(['/apps/academy/courses']);
+  }
+
+  /**
+   * Add Memo
+   */
+  addMemo(): void {
+    this.dialogRef = this._matDialog.open(MemoComponent, {
+      panelClass: 'event-form-dialog',
+      data: {
+        action: 'new'
+      }
+    });
+    this.dialogRef.afterClosed().subscribe((response: FormGroup) => {
+      if (!response) {
+        return;
+      }
+      const newEvent = response.getRawValue();
+      console.log(newEvent);
+      // this.events.push(newEvent);
+      // this.refresh.next(true);
+    });
   }
 }

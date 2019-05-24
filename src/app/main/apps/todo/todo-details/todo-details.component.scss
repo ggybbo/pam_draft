@@ -1,0 +1,119 @@
+@import 'src/@fuse/scss/fuse';
+
+todo-details {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  .userNotes {
+    padding: 0px 0px 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+
+    .section-header {
+      flex-direction: row;
+      box-sizing: border-box;
+      display: flex;
+      place-content: center flex-start;
+      align-items: center;
+      font-size: 16px;
+    }
+
+    .section-content {
+      padding: 8px 16px;
+      margin-top: 12px;
+      margin-left: 12px;
+      border-left: 5px solid #f1f1f1;
+      line-height: 24px;
+    }
+
+    .section-content-question {
+      padding: 8px 16px 8px 0px;
+      margin-left: 12px;
+      line-height: 32px;
+      color: rgba(0, 0, 0, 0.54);
+      font-size: 20px;
+      font-style: italic;
+    }
+  }
+
+  .usermp3File {
+    box-sizing: border-box;
+    line-height: 28px;
+    white-space: nowrap;
+    text-decoration: none;
+    vertical-align: baseline;
+    text-align: center;
+    min-width: 64px;
+    padding: 0;
+    margin-right: 5px;
+    overflow: visible;
+    cursor: pointer;
+  }
+
+  .usermp3Btn {
+    box-sizing: border-box;
+    line-height: 28px;
+    white-space: nowrap;
+    text-decoration: none;
+    vertical-align: baseline;
+    text-align: center;
+    min-width: 64px;
+    padding: 0 16px;
+    border-radius: 4px;
+    overflow: visible;
+    cursor: pointer;
+  }
+
+  .todo-header {
+    padding: 24px;
+    border-bottom: 1px solid;
+
+    .actions {
+      min-width: 88px;
+    }
+  }
+
+  .todo-content {
+    padding: 24px;
+
+    .title {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .tag {
+      font-size: 11px;
+      border-radius: 2px;
+      margin: 8px 4px 0 0;
+      padding: 3px 8px;
+
+      .tag-color {
+        width: 8px;
+        height: 8px;
+        margin-right: 8px;
+        border-radius: 50%;
+      }
+    }
+
+    .dates {
+      .mat-form-field {
+        width: auto !important;
+      }
+    }
+
+    .users {
+      .ngx-basic-audio-player {
+        background: #ffda38;
+      }
+    }
+
+    .teacher {
+      .ngx-basic-audio-player {
+        background: #18daf9b5;
+      }
+    }
+  }
+}

@@ -140,8 +140,8 @@
         [refresh]="refresh"
         [activeDayIsOpen]="activeDayIsOpen"
         (dayClicked)="dayClicked($event.day)"
-        (eventClicked)="editEvent('edit', $event.event)"
-        (eventTimesChanged)="eventTimesChanged($event)"
+        (eventClicked)="($event)"
+        (eventTimesChanged)="($event)"
         (beforeViewRender)="beforeMonthViewRender($event)"
       >
       </mwl-calendar-month-view>

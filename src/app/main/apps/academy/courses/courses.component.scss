@@ -184,5 +184,14 @@
         }
       }
     }
+    .lmargin5 {
+      margin-left: -5px;
+    }
+    .thumbnail_image.small {
+      height: 26px;
+      width: 26px;
+      border-radius: 50%;
+      margin: 0 3px;
+    }
   }
 }

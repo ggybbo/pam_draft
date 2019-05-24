@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
 import {
   MatButtonModule,
   MatDatepickerModule,
@@ -10,7 +9,12 @@ import {
   MatInputModule,
   MatSlideToggleModule,
   MatToolbarModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatCheckboxModule,
+  MatExpansionModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatSnackBarModule
 } from '@angular/material';
 import { ColorPickerModule } from 'ngx-color-picker';
 import {
@@ -28,6 +32,7 @@ import { CalendarComponent } from './calendar.component';
 import { CalendarService } from './calendar.service';
 import { EventFormComponent } from './event-form/event-form.component';
 import { ContentFormComponent } from './content-form/content-form.component';
+import { AddPersonFormComponent } from './add-person-form/add-person-form.component';
 
 const routes: Routes = [
   {
@@ -41,19 +46,29 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [CalendarComponent, EventFormComponent, ContentFormComponent],
+  declarations: [
+    CalendarComponent,
+    EventFormComponent,
+    ContentFormComponent,
+    AddPersonFormComponent
+  ],
   imports: [
     RouterModule.forChild(routes),
 
     MatButtonModule,
+    MatExpansionModule,
+    MatFormFieldModule,
     MatDatepickerModule,
     MatDialogModule,
-    MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatCheckboxModule,
     MatSlideToggleModule,
     MatToolbarModule,
     MatTooltipModule,
+    MatSnackBarModule,
 
     AngularCalendarModule.forRoot({
       provide: DateAdapter,
@@ -67,6 +82,10 @@ const routes: Routes = [
     CKEditorModule
   ],
   providers: [CalendarService],
-  entryComponents: [EventFormComponent, ContentFormComponent]
+  entryComponents: [
+    EventFormComponent,
+    ContentFormComponent,
+    AddPersonFormComponent
+  ]
 })
 export class CalendarModule {}

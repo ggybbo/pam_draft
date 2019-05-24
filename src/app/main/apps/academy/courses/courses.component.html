@@ -7,7 +7,7 @@
     <div class="hero-text">
       <mat-icon class="hero-icon">School</mat-icon>
       <h1 [@animate]="{ value: '*', params: { delay: '100ms', y: '25px' } }">
-        WELCOME TO ACADEMY
+        WELCOME TO PAM ACADEMY
       </h1>
       <h3 [@animate]="{ value: '*', params: { delay: '100ms', y: '25px' } }">
         Our courses will step you through the process of building a small
@@ -92,17 +92,34 @@
               fxLayoutAlign="center center"
               fxFlex="1 1 auto"
             >
-              <div class="h1">{{ course.title }}</div>
-              <p>{{ course.slug }}</p>
-              <div class="updated">{{ course.updatedAt | date }}</div>
+              <!-- <div class="h1">{{ course.title }}</div> -->
+              <div class="updated">
+                <mat-icon inline="true">pin_drop</mat-icon>
+                <span class="lmargin5">{{ course.location }}</span>
+              </div>
+              <div class="updated">
+                <mat-icon inline="true">access_time</mat-icon
+                ><span class="lmargin5">{{
+                  course.time.start | date: 'short'
+                }}</span>
+              </div>
+              <div *ngIf="course.attendee">
+                <div class="updated">
+                  <span *ngFor="let attendeeInfo of course.attendInfo">
+                    <img
+                      class="thumbnail_image small"
+                      [src]="attendeeInfo[0] || ''"
+                      [matTooltip]="attendeeInfo[1] || ''"
+                    />
+                  </span>
+                </div>
+              </div>
             </div>
             <div class="footer" fxLayout="row" fxLayoutAlign="center center">
               <button
                 mat-button
                 color="accent"
-                [routerLink]="
-                  '/apps/academy/courses/' + course.id + '/' + course.slug
-                "
+                [routerLink]="'/apps/academy/courses/' + course.key"
               >
                 Join
               </button>

@@ -1,5 +1,6 @@
 import { CalendarEventAction } from 'angular-calendar';
 import { startOfDay, endOfDay } from 'date-fns';
+import { FuseUtils } from '@fuse/utils';
 
 export class CalendarEventModel {
   start: Date;
@@ -20,9 +21,11 @@ export class CalendarEventModel {
   };
   draggable?: boolean;
   meta?: {
+    key: string;
     location: string;
     notes: string;
     level: number;
+    tid: number;
     first?: string;
     second?: string;
     third?: string;
@@ -48,9 +51,11 @@ export class CalendarEventModel {
     this.allDay = data.allDay || false;
     this.cssClass = data.cssClass || '';
     this.meta = {
+      key: (data.meta && data.meta.key) || FuseUtils.generateGUID(),
       location: (data.meta && data.meta.location) || '',
       notes: (data.meta && data.meta.notes) || '',
       level: (data.meta && data.meta.level) || '',
+      tid: (data.meta && data.meta.tid) || '',
       first: (data.meta && data.meta.location) || '',
       second: (data.meta && data.meta.notes) || '',
       third: (data.meta && data.meta.level) || ''

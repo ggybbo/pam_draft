@@ -3,10 +3,13 @@ import { RouterModule } from '@angular/router';
 import { FuseSharedModule } from '@fuse/shared.module';
 import {
   MatButtonModule,
+  MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
-  MatSelectModule
+  MatSelectModule,
+  MatToolbarModule,
+  MatTooltipModule
 } from '@angular/material';
 import { FuseSidebarModule } from '@fuse/components';
 
@@ -17,6 +20,11 @@ import { CourseComponent } from './course/course.component';
 import { CoursesService } from './courses.service';
 import { CourseService } from './course.service';
 import { TransLevelPipe } from './academy.pipe';
+import { SanitizerPipe } from './sanitizer.pipe';
+import { OembedPipe } from './oembed.pipe';
+import { MemoComponent } from './course/memo/memo.component';
+
+// import { CKEditorModule } from '../../../../ckeditor/ckeditor.module';
 
 const routes = [
   {
@@ -27,7 +35,7 @@ const routes = [
     }
   },
   {
-    path: 'courses/:courseId/:courseSlug',
+    path: 'courses/:cId',
     component: CourseComponent,
     resolve: {
       academy: CourseService
@@ -40,20 +48,34 @@ const routes = [
 ];
 
 @NgModule({
-  declarations: [CoursesComponent, CourseComponent, TransLevelPipe],
+  declarations: [
+    CoursesComponent,
+    CourseComponent,
+    TransLevelPipe,
+    SanitizerPipe,
+    OembedPipe,
+    MemoComponent
+  ],
   imports: [
     RouterModule.forChild(routes),
     SweetAlert2Module.forRoot(),
 
     MatFormFieldModule,
+    MatDialogModule,
     MatIconModule,
     MatButtonModule,
     MatInputModule,
     MatSelectModule,
+    MatToolbarModule,
+    MatTooltipModule,
 
     FuseSharedModule,
     FuseSidebarModule
+
+    // CKEditor 5
+    // CKEditorModule
   ],
-  providers: [CoursesService, CourseService]
+  providers: [CoursesService, CourseService],
+  entryComponents: [MemoComponent]
 })
 export class AcademyModule {}

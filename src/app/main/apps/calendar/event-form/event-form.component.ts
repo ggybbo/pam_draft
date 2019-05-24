@@ -66,6 +66,11 @@ export class EventFormComponent {
   }
 
   createEventForm(): FormGroup {
+    const tid =
+      JSON.parse(sessionStorage.getItem('userInfo')).userData.mtype >= 5
+        ? JSON.parse(sessionStorage.getItem('userInfo')).userData.id
+        : 0;
+
     return new FormGroup({
       title: new FormControl(this.event.title),
       start: new FormControl(this.event.start),
@@ -80,7 +85,9 @@ export class EventFormComponent {
       meta: this._formBuilder.group({
         location: new FormControl(this.event.meta.location),
         notes: new FormControl(this.event.meta.notes),
-        level: new FormControl(this.event.meta.level)
+        level: new FormControl(this.event.meta.level),
+        key: new FormControl(this.event.meta.key),
+        tid: new FormControl(tid)
       })
     });
   }

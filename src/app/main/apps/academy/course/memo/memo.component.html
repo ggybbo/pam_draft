@@ -1,0 +1,57 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar class="mat-accent m-0">
+    <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{ dialogTitle }}</span>
+      <button
+        mat-icon-button
+        (click)="matDialogRef.close()"
+        aria-label="Close dialog"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <div mat-dialog-content class="p-16 m-0" fusePerfectScrollbar>
+    <form
+      name="memoForm"
+      [formGroup]="memoForm"
+      class="event-form w-100-p"
+      fxLayout="column"
+      fxFlex
+    >
+      <mat-form-field appearance="outline" class="w-100-p">
+        <mat-label>Title</mat-label>
+        <input matInput name="title" formControlName="title" required />
+      </mat-form-field>
+      <mat-form-field appearance="outline" fxFill>
+        <mat-label>Notes</mat-label>
+        <textarea
+          matInput
+          #content
+          name="content"
+          formControlName="content"
+          maxlength="500"
+        >
+        </textarea>
+        <mat-hint align="end">{{ content.value.length }} / 500</mat-hint>
+      </mat-form-field>
+    </form>
+  </div>
+  <div
+    mat-dialog-actions
+    class="m-0 p-16"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+  >
+    <button
+      mat-button
+      color="accent"
+      class="save-button"
+      (click)="matDialogRef.close(memoForm)"
+      [disabled]="memoForm.invalid"
+      aria-label="SAVE"
+    >
+      SAVE
+    </button>
+  </div>
+</div>

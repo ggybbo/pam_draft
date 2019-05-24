@@ -7,6 +7,8 @@ import {
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
+import { settings } from '../../../../environments/global';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -22,19 +24,18 @@ export class CourseService implements Resolve<any> {
     state: RouterStateSnapshot
   ): Promise<any> | Observable<any> | any {
     return new Promise((resolve, reject) => {
-      Promise.all([
-        this.getCourse(route.params.courseId, route.params.courseSlug)
-      ]).then(() => {
+      Promise.all([this.getCourse(route.params.cId)]).then(() => {
         resolve();
       }, reject);
     });
   }
 
-  getCourse(courseId, courseSlug): Promise<any> {
+  getCourse(cId): Promise<any> {
     return new Promise((resolve, reject) => {
       this._httpClient
-        .get('http://localhost:3000/courses/' + courseSlug + '/' + courseId)
+        .get(`http://${settings.apiUrl}:3000/courses/` + cId)
         .subscribe((response: any) => {
+          console.log(response);
           this.onCourseChanged.next(response);
           resolve(response);
         }, reject);

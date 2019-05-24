@@ -1,4 +1,5 @@
 import { FuseNavigation } from '@fuse/types';
+import { TodoCountService } from '../services/todo/todocount.service';
 
 export const navigation: FuseNavigation[] = [
   {
@@ -9,32 +10,106 @@ export const navigation: FuseNavigation[] = [
     icon: 'apps',
     children: [
       {
+        id: 'dashboards',
+        title: 'Dashboards',
+        translate: 'Dashboards',
+        type: 'collapsable',
+        icon: 'dashboard',
+        children: [
+          {
+            id: 'analytics',
+            title: 'Analytics',
+            type: 'item',
+            url: '/apps/dashboards/analytics'
+          },
+          {
+            id: 'project',
+            title: 'Information',
+            type: 'item',
+            url: '/apps/dashboards/project'
+          }
+        ]
+      },
+      {
         id: 'academy',
         title: 'Academy',
         translate: '수업',
         type: 'item',
         icon: 'school',
         url: '/apps/academy'
-      },
+      }
+      // {
+      //   id: 'calendar',
+      //   title: 'Calendar',
+      //   translate: '일정',
+      //   type: 'item',
+      //   icon: 'today',
+      //   url: '/apps/calendar'
+      // },
+      // {
+      //   id: 'e-commerce',
+      //   title: 'E-Commerce',
+      //   translate: '수업자료',
+      //   type: 'collapsable',
+      //   icon: 'save',
+      //   children: [
+      //     {
+      //       id: 'products',
+      //       title: 'Materials',
+      //       type: 'item',
+      //       url: '/apps/e-commerce/products',
+      //       exactMatch: true
+      //     }
+      //   ]
+      // },
+      // {
+      //   id: 'contacts',
+      //   title: 'Contacts',
+      //   translate: '회원관리',
+      //   type: 'item',
+      //   icon: 'account_box',
+      //   url: '/apps/contacts'
+      // }
+      // {
+      //   id: 'scrumboard',
+      //   title: 'Scrumboard',
+      //   translate: '수업 데이터',
+      //   type: 'item',
+      //   icon: 'assessment',
+      //   url: '/apps/scrumboard'
+      // }
+    ]
+  },
+  {
+    id: 'pages',
+    title: 'Pages',
+    type: 'group',
+    icon: 'pages',
+    children: [
       {
-        id: 'calendar',
-        title: 'Calendar',
-        translate: '일정',
+        id: 'profile',
+        title: 'Profile',
         type: 'item',
-        icon: 'today',
-        url: '/apps/calendar'
-      },
+        icon: 'person',
+        url: '/pages/profile'
+      }
+    ]
+  },
+  {
+    id: 'documentation',
+    title: 'Documentation',
+    icon: 'import_contacts',
+    type: 'group',
+    children: [
       {
-        id: 'sample',
-        title: 'Sample',
-        translate: 'NAV.SAMPLE.TITLE',
+        id: 'changelog',
+        title: 'Changelog',
         type: 'item',
-        icon: 'email',
-        url: '/sample',
+        icon: 'update',
+        url: '/documentation/changelog',
         badge: {
-          title: '25',
-          translate: 'NAV.SAMPLE.BADGE',
-          bg: '#F44336',
+          title: '1.0.0',
+          bg: '#EC0C8E',
           fg: '#FFFFFF'
         }
       }

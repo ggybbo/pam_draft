@@ -14,6 +14,7 @@ import { FuseNavigationService } from '@fuse/components/navigation/navigation.se
 import { FusePerfectScrollbarDirective } from '@fuse/directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 import { ProfileService } from 'app/layout/profile.service';
+import { TodoCountService } from 'app/services/todo/todocount.service';
 
 @Component({
   selector: 'navbar-vertical-style-1',
@@ -26,7 +27,7 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
   navigation: any;
   name: string;
   email: string;
-  imgUrl: string;
+  imgUrl: string = '';
 
   // Private
   private _fusePerfectScrollbar: FusePerfectScrollbarDirective;
@@ -45,7 +46,8 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
     private _fuseNavigationService: FuseNavigationService,
     private _fuseSidebarService: FuseSidebarService,
     private _router: Router,
-    private _profileService: ProfileService
+    private _profileService: ProfileService,
+    private _todoCountService: TodoCountService
   ) {
     // Set the private defaults
     this._unsubscribeAll = new Subject();
@@ -134,13 +136,92 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
         this.navigation = this._fuseNavigationService.getCurrentNavigation();
       });
 
-    const accessToken = JSON.parse(localStorage.getItem('currentUser'));
+    // const accessToken = JSON.parse(localStorage.getItem('currentUser'));
+    // const userDB = JSON.parse(sessionStorage.getItem('userInfo'));
+    const accessToken = JSON.parse(sessionStorage.getItem('currentUser'));
+
+    if (accessToken === null) {
+      this._router.navigate(['/pages/auth/login']);
+      return;
+    }
+
     this._profileService
       .getProfile(accessToken.access_token)
       .subscribe((data: any) => {
+        if (data.code === -401) {
+          this._router.navigate(['/pages/auth/login']);
+          return;
+        }
+
         this.name = data.properties.nickname;
         this.email = data.kakao_account.email;
-        this.imgUrl = data.properties.profile_image;
+        this.imgUrl =
+          data.properties.thumbnail_image ||
+          'https://accounts.kakao.com/assets//weblogin/default_thumb@2x.png';
+        this._todoCountService
+          .getTodosCount(data.userData.id, data.userData.mtype)
+          .then(data => {
+            this._fuseNavigationService.addNavigationItem(
+              {
+                id: 'to-do',
+                title: 'To-Do',
+                translate: '숙제',
+                type: 'item',
+                icon: 'check_box',
+                url: '/apps/todo',
+                badge: {
+                  title: data.count,
+                  bg: '#FF6F00',
+                  fg: '#FFFFFF'
+                }
+              },
+              'pages'
+            );
+            if (data.rules >= 5) {
+              this._fuseNavigationService.addNavigationItem(
+                {
+                  id: 'calendar',
+                  title: 'Calendar',
+                  translate: '일정',
+                  type: 'item',
+                  icon: 'today',
+                  url: '/apps/calendar'
+                },
+                'applications'
+              );
+              this._fuseNavigationService.addNavigationItem(
+                {
+                  id: 'e-commerce',
+                  title: 'E-Commerce',
+                  translate: '수업자료',
+                  type: 'collapsable',
+                  icon: 'save',
+                  children: [
+                    {
+                      id: 'products',
+                      title: 'Materials',
+                      type: 'item',
+                      url: '/apps/e-commerce/products',
+                      exactMatch: true
+                    }
+                  ]
+                },
+                'applications'
+              );
+              this._fuseNavigationService.addNavigationItem(
+                {
+                  id: 'contacts',
+                  title: 'Contacts',
+                  translate: '회원관리',
+                  type: 'item',
+                  icon: 'account_box',
+                  url: '/apps/contacts'
+                },
+                'applications'
+              );
+            }
+          })
+          .catch(err => console.log('fail to get todo count from service'));
       });
   }
 

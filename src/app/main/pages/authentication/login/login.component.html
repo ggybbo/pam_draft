@@ -1,4 +1,4 @@
-<div id="login" fxLayout="column">
+<div id="login" fxLayout="column" *ngIf="!loggedin">
   <div id="login-form-wrapper" fxLayout="column" fxLayoutAlign="center center">
     <div
       id="login-form"
@@ -24,6 +24,9 @@
         <img src="assets/images/kakao/Kakao_Corp._symbol_-_2012.svg" />
         Log in with Kakao
       </button>
+
+      <br />
+      <!-- <a (click)="addplusFriend()">Add PlusFriend</a> -->
 
       <!-- <button mat-raised-button class="facebook" (click)="fbLogin()">
         Log in with Facebook

@@ -1,7 +1,14 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation,
+  Input
+} from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
 import * as _ from 'lodash';
 
 import { FuseConfigService } from '@fuse/services/config.service';
@@ -9,6 +16,7 @@ import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
 import { navigation } from 'app/navigation/navigation';
 import { ProfileService } from 'app/layout/profile.service';
+import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
 
 @Component({
   selector: 'toolbar',
@@ -25,7 +33,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   selectedLanguage: any;
   userStatusOptions: any[];
   name: string;
-  imgUrl: string;
+  imgUrl: string = '';
 
   // Private
   private _unsubscribeAll: Subject<any>;
@@ -41,7 +49,9 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     private _fuseConfigService: FuseConfigService,
     private _fuseSidebarService: FuseSidebarService,
     private _translateService: TranslateService,
-    private _profileService: ProfileService
+    private _profileService: ProfileService,
+    private _router: Router,
+    private _fuseNavigationService: FuseNavigationService
   ) {
     // Set the defaults
     this.userStatusOptions = [
@@ -77,16 +87,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         id: 'en',
         title: 'English',
         flag: 'us'
-      },
-      {
-        id: 'tr',
-        title: 'Turkish',
-        flag: 'tr'
       }
     ];
 
     this.navigation = navigation;
-
     // Set the private defaults
     this._unsubscribeAll = new Subject();
   }
@@ -113,12 +117,26 @@ export class ToolbarComponent implements OnInit, OnDestroy {
       id: this._translateService.currentLang
     });
 
-    const accessToken = JSON.parse(localStorage.getItem('currentUser'));
+    // const accessToken = JSON.parse(localStorage.getItem('currentUser'));
+    // User Kakao access_token 정보를 활용해서 유저정보를 sessionStorage에 저장한다
+    const accessToken = JSON.parse(sessionStorage.getItem('currentUser'));
+
+    if (accessToken === null) {
+      this._router.navigate(['/pages/auth/login']);
+      return;
+    }
+
     this._profileService
       .getProfile(accessToken.access_token)
       .subscribe((data: any) => {
+        if (data.code === -401) {
+          this._router.navigate(['/pages/auth/login']);
+          return;
+        }
         this.name = data.properties.nickname;
-        this.imgUrl = data.properties.profile_image;
+        this.imgUrl =
+          data.properties.thumbnail_image ||
+          'https://accounts.kakao.com/assets//weblogin/default_thumb@2x.png';
       });
   }
 
@@ -165,5 +183,18 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
     // Use the selected language for translations
     this._translateService.use(lang.id);
+  }
+
+  logout(): void {
+    // this._fuseNavigationService.removeNavigationItem('to-do');
+    // this._fuseNavigationService.removeNavigationItem('calendar');
+    // this._fuseNavigationService.removeNavigationItem('e-commerce');
+    // this._fuseNavigationService.removeNavigationItem('contacts');
+
+    sessionStorage.removeItem('userInfo');
+    sessionStorage.removeItem('currentUser');
+
+    this._router.navigate(['/pages/auth/login']);
+    location.reload();
   }
 }

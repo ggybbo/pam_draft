@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { fuseAnimations } from '@fuse/animations';
 
 import { CoursesService } from '../courses.service';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-courses',
@@ -40,7 +40,24 @@ export class CoursesComponent implements OnInit, OnDestroy {
       });
 
     this._academyCoursesService.onCoursesChanged
-      .pipe(takeUntil(this._unsubscribeAll))
+      .pipe(
+        takeUntil(this._unsubscribeAll),
+        map(e => {
+          e.map(el => {
+            if (el.attendee) {
+              let count = el.attendee.split(',').length;
+              el.attendInfo = [];
+              for (let i = 0; i < count; i++) {
+                el.attendInfo.push([
+                  el.attendee.split(',')[i],
+                  el.attendee_name.split(',')[i]
+                ]);
+              }
+            }
+          });
+          return e;
+        })
+      )
       .subscribe(course => {
         this.filteredCourses = this.coursesFilteredByCategory = this.courses = course;
       });
@@ -52,7 +69,7 @@ export class CoursesComponent implements OnInit, OnDestroy {
   }
 
   filterCoursesByCategory(): void {
-    console.log(this.currentCategory);
+    // console.log(this.currentCategory);
     if (this.currentCategory === 'all') {
       this.coursesFilteredByCategory = this.courses;
       this.filteredCourses = this.courses;

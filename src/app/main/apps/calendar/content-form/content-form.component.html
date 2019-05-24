@@ -19,18 +19,35 @@
       fxLayout="column"
       fxFlex
     >
+      <input type="hidden" name="key" formControlName="key" />
       <mat-form-field appearance="outline" class="w-100-p">
         <mat-label>First</mat-label>
         <input matInput name="first" formControlName="first" required />
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-100-p">
         <mat-label>Second</mat-label>
-        <input matInput name="second" formControlName="second" required />
+        <input matInput name="second" formControlName="second" />
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-100-p">
         <mat-label>Third</mat-label>
-        <input matInput name="third" formControlName="third" required />
+        <input matInput name="third" formControlName="third" />
       </mat-form-field>
     </form>
+  </div>
+  <div
+    mat-dialog-actions
+    class="m-0 p-16"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+  >
+    <button
+      mat-button
+      color="primary"
+      class="save-button"
+      (click)="matDialogRef.close(contentForm)"
+      aria-label="ADD"
+    >
+      ADD
+    </button>
   </div>
 </div>

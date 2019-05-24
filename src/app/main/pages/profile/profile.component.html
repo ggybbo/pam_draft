@@ -15,15 +15,15 @@
       fxLayoutAlign.gt-sm="start center"
     >
       <img
-        class="profile-image avatar huge"
-        src="assets/images/avatars/Velazquez.jpg"
+        class="profile-image p_avatar huge"
+        [src]="thumbnail_image"
         [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }"
       />
       <div
         class="name"
         [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }"
       >
-        Charlie Adams
+        {{ name }}
       </div>
     </div>
 
@@ -33,8 +33,13 @@
       fxLayoutAlign="end center"
       [@animate]="{ value: '*', params: { delay: '200ms' } }"
     >
-      <button mat-raised-button color="accent" aria-label="Follow">
-        Follow
+      <button
+        mat-raised-button
+        color="accent"
+        aria-label="Follow"
+        (click)="newContact()"
+      >
+        EDIT PROFILE
       </button>
       <button mat-raised-button color="primary" aria-label="Send Message">
         Send Message
@@ -46,12 +51,12 @@
   <!-- CONTENT -->
   <div class="content">
     <mat-tab-group dynamicHeight="true">
-      <mat-tab label="Timeline">
+      <mat-tab label="Monthly Report">
         <profile-timeline></profile-timeline>
       </mat-tab>
 
-      <mat-tab label="About">
-        <profile-about></profile-about>
+      <mat-tab label="Post">
+        <!-- <profile-about></profile-about> -->
       </mat-tab>
 
       <mat-tab label="Photos & Videos">

@@ -8,6 +8,8 @@ import {
 import { Observable, Subject } from 'rxjs';
 import { subDays, startOfDay, addDays, endOfMonth, addHours } from 'date-fns';
 
+import { settings } from '../../../../environments/global';
+
 @Injectable()
 export class CalendarService implements Resolve<any> {
   events: any;
@@ -29,28 +31,70 @@ export class CalendarService implements Resolve<any> {
   }
 
   getEvents(): Promise<any> {
+    let apiUrl = '';
+    const userType = JSON.parse(sessionStorage.getItem('userInfo'));
+
+    if (userType.userData.mtype >= 5) {
+      apiUrl = `http://${settings.apiUrl}:3000/classes/teacher/${
+        userType.userData.id
+      }`;
+    } else if (userType.userData.mtype >= 10) {
+      apiUrl = `http://${settings.apiUrl}:3000/classes`;
+    } else {
+      apiUrl = `http://${settings.apiUrl}:3000/classes/user/${
+        userType.userData.id
+      }`;
+    }
+
     return new Promise((resolve, reject) => {
-      this._httpClient
-        .get('http://localhost:3000/classes')
-        .subscribe((response: any) => {
-          this.events = response.map(classes => {
-            return classes.time;
-          });
-          this.onEventsUpdated.next(this.events);
-          resolve(this.events);
-        }, reject);
+      this._httpClient.get(apiUrl).subscribe((response: any) => {
+        this.events = response.map(classes => {
+          return Object.assign(
+            { id: classes.id, tId: classes.tid, userId: classes.userId },
+            classes.time
+          );
+        });
+        this.onEventsUpdated.next(this.events);
+        resolve(this.events);
+      }, reject);
     });
   }
 
   updateEvents(events): Promise<any> {
     return new Promise((resolve, reject) => {
       this._httpClient
-        .post('http://localhost:3000/classes', {
+        .post(`http://${settings.apiUrl}:3000/classes`, {
           id: 'events',
-          data: [...events]
+          data: events
         })
         .subscribe((response: any) => {
+          console.log(response);
+          if (response.code === -401) {
+            resolve(false);
+          } else {
+            this.getEvents();
+          }
+        }, reject);
+    });
+  }
+
+  deleteEvents(key): Promise<any> {
+    console.log(key);
+    return new Promise((resolve, reject) => {
+      this._httpClient
+        .delete(`http://${settings.apiUrl}:3000/classes/${key}`)
+        .subscribe((response: any) => {
           this.getEvents();
+        }, reject);
+    });
+  }
+
+  updateMaterials(e): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._httpClient
+        .post(`http://${settings.apiUrl}:3000/materials/`, { data: e })
+        .subscribe((response: any) => {
+          resolve(response);
         }, reject);
     });
   }
